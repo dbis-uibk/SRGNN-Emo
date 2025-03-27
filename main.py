@@ -87,8 +87,6 @@ def main(opt):
     edge_weight = torch.FloatTensor(edge_weight)
     edge_type = torch.LongTensor(edge_type)
 
-    print("before data")
-
     data = Data(
         x=torch.FloatTensor(features),
         y=y,
@@ -103,8 +101,6 @@ def main(opt):
 
     train_loader = NeighborLoader(data, num_neighbors=[opt.neighbors] * opt.layers,
                                   shuffle=True, batch_size=opt.batch_size)
-
-    print("after loader")
     encoder = WRGCN(input_dim=opt.input_dim,
                     dim=opt.dim,
                     num_layers=opt.layers,
@@ -114,8 +110,6 @@ def main(opt):
 
     regressor = Regressor(opt.dim if opt.layers > 0 or opt.projection else opt.input_dim, opt.dim, num_targets=9,
                           dropout=opt.dropout)
-    
-    print("before model")
 
     model = trans_to_cuda(SHGR(opt, y_labeled, encoder=encoder, regressor=regressor))
     print(model)
@@ -126,10 +120,8 @@ def main(opt):
         data,
     )
 
-    print('start training')
-
-    results = trainer.train(train_loader, opt.epochs, export_embs=False)
-    #results = trainer.train_folds(data, y_labeled, folds=opt.folds)
+    #results = trainer.train(train_loader, opt.epochs, export_embs=False)
+    results = trainer.train_folds(data, y_labeled, folds=opt.folds)
 
     for key, value in results.items():
         print(f'{key}: {value:.4f}')
