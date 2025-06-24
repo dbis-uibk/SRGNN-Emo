@@ -7,11 +7,22 @@ Semi-supervised Multi-relational Graph Neural Network for Nuanced Music Emotion 
 - Semi-supervised learning for robust predictions
 - Compatibility with various music feature representations (e.g., musicnn, jukebox, maest)
 
-## Dataset
-The dataset, including preprocessed features, will be published soon. Data preprocessing scripts expect:
+## Dataset & Graph
+Main script expects:
 - Node features (as `.npy` files)
 - Graph information (`graph.pkl` containing edge indices, weights, and types) 
 - Labels dictionary
+
+Download the preprocessed features and labels under: https://drive.google.com/drive/folders/1cKQzPtPsx7xrCzE_XbQ1qdNq5FLOH4aM 
+
+Create a folder ```data/music4all-onion``` and copy the data there.
+
+The full dataset can be found here: https://zenodo.org/records/15394646
+
+Download following files for the graph building process:
+- ```userid_trackid_timestamp.tsv```
+- ```id_tags_dict.tsv```
+- ```id_genres_tf-idf.tsv```
 
 Run ```build_graphs.py``` in ```preprocessing``` to generate the multirelation graphs.
 
@@ -67,11 +78,16 @@ python main.py --dataset m4a --rep jukebox
 Please cite our work if you use this model:
 
 ```bibtex
-@inproceedings{SRGNN_EMO,
-  title={Semi-supervised Multi-relational Graph Neural Network for Nuanced Music Emotion Recognition},
-  author={TBA},
-  year={TBA},
-  publisher={TBA}
+@article{peintner2025srgnnemo,
+  title={Nuanced Music Emotion Recognition via a Semi-Supervised Multi-Relational Graph Neural Network},
+  author={Peintner, Andreas and Moscati, Marta and Kinoshita, Yu and Vogl, Richard and Knees, Peter and Schedl, Markus and Strauss, Hannah and Zentner, Marcel and Zangerle, Eva},
+  journal={Transactions of the International Society for Music Information Retrieval},
+  volume={8},
+  number={1},
+  pages={140--153},
+  year={2025},
+  publisher={Ubiquity Press},
+  doi = {10.5334/tismir.235}
 }
 ```
 
