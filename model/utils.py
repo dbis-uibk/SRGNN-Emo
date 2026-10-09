@@ -3,8 +3,11 @@ import time
 import datetime
 
 from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import KBinsDiscretizer
+
 import torch_geometric
 from torch_geometric.utils import add_self_loops
+from torch_geometric.data import HeteroData
 from tqdm import tqdm
 import pandas as pd
 import itertools
@@ -98,4 +101,23 @@ def normalize_edge_weights(edge_index, edge_weight, num_nodes=None):
     edge_weight = edge_weight / deg[row]
 
     return edge_index, edge_weight
+
+
+def stratified_cv_split_graph(data, n_splits=10, n_bins=10, seed=None):
+    store = data['track'] if isinstance(data, HeteroData) else data
+
+    # Node ids of the labeled nodes; the splits are mapped back to these ids
+    node_ids = store.label_mask.nonzero(as_tuple=True)[0].cpu().numpy()
+
+    # Calculate the mean of the targets
+    y = store.y[node_ids].cpu().numpy().mean(axis=1)
+
+    # Discretize the target into bins
+    discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')
+    y_binned = discretizer.fit_transform(y.reshape(-1, 1)).astype(int).flatten()
+
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+
+    for train_pos, test_pos in skf.split(y_binned, y_binned):
+        yield node_ids[train_pos], node_ids[test_pos]
 

@@ -13,7 +13,7 @@ from torch_geometric.loader import NeighborSampler, NeighborLoader
 from torch_geometric.nn import to_hetero
 import torch_geometric.transforms as T
 
-from baselines.util.utils import stratified_cv_split_graph
+from model.utils import stratified_cv_split_graph
 from model.encoder import WRGCN
 from model.regressor import Regressor
 from model.shgr import SHGR
